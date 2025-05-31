@@ -34,7 +34,16 @@ export class InMemoryPropertyRepository implements IPropertyRepository {
         return Promise.resolve(properties);
     }
     update(property: Property): Promise<Property | null> {
-        throw new Error("Method not implemented.");
+        const itemIndex = this.items.findIndex(item => item.id === property.id);
+
+        if (itemIndex === -1) {
+        return Promise.resolve(null); // Imóvel não encontrado para atualização.
+        }
+
+        // Substitui o imóvel antigo pela nova versão atualizada.
+        // A entidade 'property' já deve conter as props atualizadas e um 'updatedAt' novo.
+        this.items[itemIndex] = property;
+        return Promise.resolve(property); // Retorna a instância atualizada. 
     }
     delete(id: string): Promise<boolean> {
         throw new Error("Method not implemented.");
