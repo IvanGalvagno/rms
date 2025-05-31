@@ -16,7 +16,7 @@ export interface PropertyProps {
     area?: number; // metros quadrados
     parkingSpaces?: number; // número de vagas de garagem
     rentAmount: number; // valor do aluguel
-    status: 'AVAILABLE' | 'RENTED' | 'UNAVAILABLE' | 'UNDER_MAINTENANCE'; // status do imóvel
+    status?: 'AVAILABLE' | 'RENTED' | 'UNAVAILABLE' | 'UNDER_MAINTENANCE'; // status do imóvel
     createdAt?: Date;
     updatedAt?: Date;
 }
@@ -31,6 +31,7 @@ export class Property {
         const now = new Date();
         this.props = {
             ...props,
+            status: props.status ?? 'AVAILABLE', // Define o status padrão como 'AVAILABLE'
             createdAt: props.createdAt ?? now,
             updatedAt: props.updatedAt ?? now,
         };
@@ -42,7 +43,7 @@ export class Property {
      * @param props - As propriedades para criar o imóvel, sem o ID.
      * @param id - Opcional: um ID existente, se estiver recriando um objeto (ex: do banco de dados).
      */
-    public static create(props: Omit<PropertyProps, 'id' | 'createdAt' | 'updatedAt'>, id?: string): Property {
+    public static create(props: Omit<PropertyProps, 'id' | 'createdAt' | 'updatedAt' | 'status'>, id?: string): Property {
         this.validate(props);
         // Remove 'id' explicitamente das props para garantir que o construtor lide com isso.
         const { id: _, ...restOfProps } = props as PropertyProps;
@@ -83,7 +84,7 @@ export class Property {
     get area(): number | undefined { return this.props.area ?? undefined; }
     get rentAmount(): number { return this.props.rentAmount; }
     get parkingSpaces(): number | undefined { return this.props.parkingSpaces ?? undefined; }
-    get status(): string { return this.props.status; }
+    get status(): string | undefined { return this.props.status ?? undefined; }
     get createdAt(): Date { return this.props.createdAt; }
     get updatedAt(): Date { return this.props.updatedAt; }
     // get ownerId(): string { return this.props.ownerId; }
