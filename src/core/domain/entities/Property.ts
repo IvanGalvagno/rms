@@ -24,7 +24,7 @@ export interface PropertyProps {
 // Imovel
 export class Property {
     public readonly id: string;
-    private props: Omit<PropertyProps, 'id'> & { createdAt: Date; updatedAt: Date };
+    public props: Omit<PropertyProps, 'id'> & { createdAt: Date; updatedAt: Date };
 
     private constructor(props: PropertyProps, id?: string) {
         this.id = id ?? crypto.randomUUID();
