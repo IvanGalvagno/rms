@@ -18,7 +18,16 @@ export class InMemoryPropertyRepository implements IPropertyRepository {
         return Promise.resolve(property);
     }
     findById(id: string): Promise<Property | null> {
-        throw new Error("Method not implemented.");
+         const foundProperty = this.items.find(item => item.id === id);
+        if (!foundProperty) {
+            return Promise.resolve(null);
+        }
+        // Retorna uma nova instância da entidade baseada nas props do objeto encontrado
+        // para simular a desserialização de um banco de dados e garantir imutabilidade.
+        // Ou, se a entidade Property for projetada para ser imutável após a criação (exceto por métodos específicos),
+        // retornar foundProperty diretamente pode ser aceitável para um InMemory, mas clonar é mais seguro.
+        const instance = Property.create({...foundProperty.props}, foundProperty.id);
+        return Promise.resolve(instance);
     }
     findAll(): Promise<Property[]> {
         throw new Error("Method not implemented.");
