@@ -46,7 +46,13 @@ export class InMemoryPropertyRepository implements IPropertyRepository {
         return Promise.resolve(property); // Retorna a instância atualizada. 
     }
     delete(id: string): Promise<boolean> {
-        throw new Error("Method not implemented.");
+        const itemIndex = this.items.findIndex(item => item.id === id);
+        if (itemIndex === -1) {
+        return Promise.resolve(false); // Imóvel não encontrado, nada para deletar.
+        }
+
+        this.items.splice(itemIndex, 1); // Remove o item do array.
+        return Promise.resolve(true); // Retorna true indicando que a deleção foi bem-sucedida.
     }
 
     private async verifyPropertyExists(id: string): Promise<boolean> {
