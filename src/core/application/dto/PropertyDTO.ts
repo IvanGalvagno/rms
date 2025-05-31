@@ -27,8 +27,9 @@ export interface PropertyDetailsDTO {
   description?: string;
   bedrooms: number;
   bathrooms: number;
-  area: number;
+  area?: number;
   rentAmount: number;
+  parkingSpaces?: number; // número de vagas de garagem
   // ownerId?: string;
   // status?: string;
   createdAt: string; // Datas podem ser strings ISO para facilitar o trânsito (ex: JSON)
