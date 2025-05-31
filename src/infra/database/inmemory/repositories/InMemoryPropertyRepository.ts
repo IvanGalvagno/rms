@@ -30,7 +30,8 @@ export class InMemoryPropertyRepository implements IPropertyRepository {
         return Promise.resolve(instance);
     }
     findAll(): Promise<Property[]> {
-        throw new Error("Method not implemented.");
+        const properties = this.items.map((property) => Property.create({...property.props}, property.id));
+        return Promise.resolve(properties);
     }
     update(property: Property): Promise<Property | null> {
         throw new Error("Method not implemented.");
