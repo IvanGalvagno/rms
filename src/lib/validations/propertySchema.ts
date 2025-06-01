@@ -20,6 +20,10 @@ export const propertySchema = z.object({
         .optional(),
     rentAmount: z.coerce.number({ invalid_type_error: "O valor do aluguel deve ser um número." })
         .positive({ message: "O valor do aluguel deve ser positivo." }),
+    parkingSpaces: z.coerce.number({ invalid_type_error: "O número de vagas de estacionamento deve ser um número." })
+        .int({ message: "O número de vagas de estacionamento deve ser um número inteiro." })
+        .min(0, { message: "O número de vagas de estacionamento não pode ser negativo." })
+        .optional(),
 });
 
 export type PropertyFormData = z.infer<typeof propertySchema>;
