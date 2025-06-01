@@ -2,6 +2,7 @@
 
 // Repositório (Interface e Implementação Concreta)
 import { CreatePropertyUseCase } from "@/core/application/useCases/properties/CreatePropertyUseCase";
+import { ListPropertiesUseCase } from "@/core/application/useCases/properties/ListPropertiesUseCase";
 import { IPropertyRepository } from "@/core/domain/repositories/IPropertyRepository";
 import { InMemoryPropertyRepository } from "@/infra/database/inmemory/repositories/InMemoryPropertyRepository";
 
@@ -10,6 +11,7 @@ const propertyRepositoryInstance: IPropertyRepository = new InMemoryPropertyRepo
 
 // --- Instanciação dos Casos de Uso ---
 export const createPropertyUseCase = new CreatePropertyUseCase(propertyRepositoryInstance);
+export const listPropertyUseCase = new ListPropertiesUseCase(propertyRepositoryInstance);
 // Outros casos de uso podem ser instanciados aqui, seguindo o mesmo padrão injetando as dependências necessárias:
 // export const findPropertyByIdUseCase = new FindPropertyByIdUseCase(propertyRepositoryInstance);
 // export const listAllPropertiesUseCase = new ListAllPropertiesUseCase(propertyRepositoryInstance);
