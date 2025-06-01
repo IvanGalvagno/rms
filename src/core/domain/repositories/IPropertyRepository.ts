@@ -1,4 +1,4 @@
-import { PaginationOptions, PaginationResult, SortOptions } from "@/core/application/types/pagnination";
+import { PaginationOptions, PaginationResult, SortOptions } from "@/core/application/types/pagination";
 import { Property, PropertyProps } from "../entities/Property";
 
 export interface IPropertyRepository {
