@@ -1,4 +1,5 @@
 import { PropertyType } from "@/core/domain/entities/Property";
+import { PaginationResult } from "../types/pagination";
 
 /**
  * DTO para a criação de um novo imóvel.
@@ -35,3 +36,6 @@ export interface PropertyDetailsDTO {
   createdAt: string; // Datas podem ser strings ISO para facilitar o trânsito (ex: JSON)
   updatedAt: string;
 }
+
+// DTO para a resposta da listagem de imóveis
+export interface ListPropertiesResponseDTO extends PaginationResult<PropertyDetailsDTO> {}
