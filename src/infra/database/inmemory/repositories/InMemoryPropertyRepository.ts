@@ -1,4 +1,5 @@
-import { Property } from "@/core/domain/entities/Property";
+import { PaginationOptions, PaginationResult, SortOptions } from "@/core/application/types/pagination";
+import { Property, PropertyProps } from "@/core/domain/entities/Property";
 import { IPropertyRepository } from "@/core/domain/repositories/IPropertyRepository";
 
 export class InMemoryPropertyRepository implements IPropertyRepository {
@@ -29,10 +30,64 @@ export class InMemoryPropertyRepository implements IPropertyRepository {
         const instance = Property.create({...foundProperty.props}, foundProperty.id);
         return Promise.resolve(instance);
     }
-    findAll(): Promise<Property[]> {
-        const properties = this.items.map((property) => Property.create({...property.props}, property.id));
-        return Promise.resolve(properties);
+    findAll(
+        paginationOptions: PaginationOptions,
+        sortOptions?: SortOptions<PropertyProps>
+    ): Promise<PaginationResult<Property>> {
+        let sortedItems = [...this.items]; // Começa com uma cópia para não modificar o original
+
+        // Aplicar Filtros (a ser implementado no futuro)
+        // if (filters) { ... }
+
+        // Aplicar Ordenação
+        if (sortOptions && sortOptions.sortBy) {
+        const { sortBy, order } = sortOptions;
+        type PropsKeys = keyof (Omit<PropertyProps, "id"> & { createdAt: Date; updatedAt: Date; });
+        const sortKey = sortBy as PropsKeys;
+        sortedItems.sort((a, b) => {
+            // Acessa as props da entidade para ordenação
+            const valA = a.props[sortKey];
+            const valB = b.props[sortKey];
+
+            // Tratamento básico para diferentes tipos de dados
+            if (typeof valA === 'string' && typeof valB === 'string') {
+            return order === 'asc' ? valA.localeCompare(valB) : valB.localeCompare(valA);
+            }
+            if (typeof valA === 'number' && typeof valB === 'number') {
+            return order === 'asc' ? valA - valB : valB - valA;
+            }
+            if (valA instanceof Date && valB instanceof Date) {
+            return order === 'asc' ? valA.getTime() - valB.getTime() : valB.getTime() - valA.getTime();
+            }
+            // Fallback para outros tipos ou se um for nulo/undefined
+            if (valA === undefined && valB !== undefined) return order === 'asc' ? -1 : 1;
+            if (valA !== undefined && valB === undefined) return order === 'asc' ? 1 : -1;
+            if (valA === undefined && valB === undefined) return 0;
+            if (valA !== undefined && valB !== undefined && valA < valB) return order === 'asc' ? -1 : 1;
+            if (valA !== undefined && valB !== undefined && valA > valB) return order === 'asc' ? 1 : -1;
+            return 0;
+        });
+        }
+
+        // Aplicar Paginação
+        const { page, limit } = paginationOptions;
+        const totalItems = sortedItems.length;
+        const totalPages = Math.ceil(totalItems / limit);
+        const startIndex = (page - 1) * limit;
+        const endIndex = page * limit;
+        const paginatedItems = sortedItems.slice(startIndex, endIndex);
+
+        return Promise.resolve({
+            data: paginatedItems.map(item => Property.create({...item.props}, item.id)), // Retorna cópias das entidades
+            totalItems,
+            currentPage: page,
+            totalPages,
+            itemsPerPage: limit,
+            hasNextPage: page < totalPages,
+            hasPreviousPage: page > 1,
+        });
     }
+
     update(property: Property): Promise<Property | null> {
         const itemIndex = this.items.findIndex(item => item.id === property.id);
 
