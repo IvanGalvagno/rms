@@ -1,4 +1,5 @@
-import { Property } from "../entities/Property";
+import { PaginationOptions, PaginationResult, SortOptions } from "@/core/application/types/pagnination";
+import { Property, PropertyProps } from "../entities/Property";
 
 export interface IPropertyRepository {
     /**
@@ -15,12 +16,18 @@ export interface IPropertyRepository {
      */
     findById(id: string): Promise<Property | null>;
 
-    /**
-     * Encontra todos os imóveis, opcionalmente com base em critérios.
-     * (Para o MVP, uma listagem simples pode ser suficiente).
-     * @returns Uma Promise resolvida com um array de entidades Property.
+     /**
+     * Encontra todos os imóveis com suporte a paginação e ordenação.
+     * @param paginationOptions Opções de paginação (página e limite).
+     * @param sortOptions Opções de ordenação (campo e direção).
+     * @param filters (Opcional) Critérios de filtro.
+     * @returns Uma Promise resolvida com um resultado paginado de entidades Property.
      */
-    findAll(): Promise<Property[]>;
+    findAll(
+        paginationOptions: PaginationOptions,
+        sortOptions?: SortOptions<PropertyProps>,
+        //filters?: Partial<PropertyProps> TODO!: Implementar filtros
+    ): Promise<PaginationResult<Property>>;
 
      /**
      * Atualiza um imóvel existente.
